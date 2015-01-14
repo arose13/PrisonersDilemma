@@ -12,7 +12,8 @@ public class PrisonersDilemma {
 	/**
 	 * If both play cooperate (true) add 300 to both players
 	 * If both play defected (false) remove 100 to both players
-	 * If players play opposite (true and false) the one that plays false gets 500 and the one that plays true gets 0;
+	 * If players play opposite (true and false) the one that plays false gets 500 and the one that plays true gets 0
+	 * If player runs out of money then they lose.
 	 */
 
 	public static void main(String[] args) {
@@ -25,8 +26,10 @@ public class PrisonersDilemma {
 		//PLAYER 2
 		Asshole player2 = new Asshole();
 		
-		long player1score = 0;
-		long player2score = 0;
+		long player1score = Math.round(mDistn.getRandomNumberFromDistn(3000, 1000));
+		long player2score = Math.round(mDistn.getRandomNumberFromDistn(3000, 1000));
+		logger("Player 1 starting: $" + player1score);
+		logger("Player 2 starting: $" + player2score);
 		
 		ArrayList<Boolean> p1history = new ArrayList<Boolean>();
 		ArrayList<Boolean> p2history = new ArrayList<Boolean>();
@@ -36,12 +39,13 @@ public class PrisonersDilemma {
 		
 		// Run the game below
 		for (double i = 0; i < numberOfRounds; i++) {
-			boolean p1d = player1.play(p1history, p2history,  player1score, player2score);
+			boolean p1d = player1.play(p1history, p2history, player1score, player2score);
 			boolean p2d = player2.play(p2history, p1history, player2score, player1score);
 			
 			p1history.add(p1d);
 			p2history.add(p2d);
 			
+			// Play round
 			if ((p1d == true) && (p2d == true)) {
 				player1score = player1score + 300;
 				player2score = player2score + 300;
@@ -59,6 +63,10 @@ public class PrisonersDilemma {
 				player2score = player2score + 0;
 				
 			}
+			
+			// Check for loser
+			if (player1score <= 0) break;			
+			if (player2score <= 0) break;
 			
 		}
 		// Game is now over
